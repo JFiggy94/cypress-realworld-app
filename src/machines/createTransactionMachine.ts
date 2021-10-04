@@ -4,6 +4,7 @@ import { dataMachine } from "./dataMachine";
 import { httpClient } from "../utils/asyncUtils";
 import { User, TransactionCreatePayload } from "../models";
 import { authService } from "./authMachine";
+import { hostName } from "utils/baseUrlUtils";
 import { backendPort } from "../utils/portUtils";
 
 export interface CreateTransactionMachineSchema {
@@ -18,7 +19,7 @@ const transactionDataMachine = dataMachine("transactionData").withConfig({
   services: {
     createData: async (ctx, event: any) => {
       const payload = omit("type", event);
-      const resp = await httpClient.post(`http://localhost:${backendPort}/transactions`, payload);
+      const resp = await httpClient.post(`http://${hostName}:${backendPort}/transactions`, payload);
       authService.send("REFRESH");
       return resp.data;
     },
